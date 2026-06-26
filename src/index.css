@@ -1,0 +1,63 @@
+@import url('https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&family=Playfair+Display:ital,wght@0,400;0,600;0,700;1,400&family=Noto+Nastaliq+Urdu:wght@400;700&family=JetBrains+Mono:wght@400;500&display=swap');
+@import "tailwindcss";
+
+@theme {
+  --color-brand-emerald: #1A4A3A;
+  --color-brand-gold: #C9A84C;
+  --color-brand-cream: #F5F0E8;
+  --color-brand-charcoal: #1C1C1C;
+  
+  --font-display: "Playfair Display", "Times New Roman", serif;
+  --font-sans: "Inter", system-ui, -apple-system, sans-serif;
+  --font-urdu: "Noto Nastaliq Urdu", "Urdu", serif;
+  --font-mono: "JetBrains Mono", ui-monospace, monospace;
+
+  --animate-spin-slow: spin 12s linear infinite;
+  --animate-spin-grooves: spin 24s linear infinite;
+  --animate-bounce-slow: bounce 3s infinite;
+  --animate-fadeIn: fadeIn 0.3s ease-out forwards;
+}
+
+@keyframes fadeIn {
+  from {
+    opacity: 0;
+    transform: translateY(5px);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
+
+/* Custom Scrollbar Styles for vintage aesthetics */
+::-webkit-scrollbar {
+  width: 6px;
+  height: 6px;
+}
+
+::-webkit-scrollbar-track {
+  background: #12221C;
+}
+
+::-webkit-scrollbar-thumb {
+  background: #C9A84C40;
+  border-radius: 3px;
+}
+
+::-webkit-scrollbar-thumb:hover {
+  background: #C9A84C80;
+}
+
+/* Base resets and micro-styling */
+body {
+  background-color: #14231E;
+  color: #F5F0E8;
+}
+
+.scrollbar-none::-webkit-scrollbar {
+  display: none;
+}
+.scrollbar-none {
+  -ms-overflow-style: none;
+  scrollbar-width: none;
+}

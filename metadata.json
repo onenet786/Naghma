@@ -1,0 +1,6 @@
+{
+  "name": "Naghma",
+  "description": "A beautiful cultural archive and streaming player for vintage Pakistani classics (1950s–1990s).",
+  "requestFramePermissions": [],
+  "majorCapabilities": ["MAJOR_CAPABILITY_SERVER_SIDE_GEMINI_API"]
+}
