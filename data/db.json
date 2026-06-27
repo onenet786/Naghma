@@ -1,0 +1,344 @@
+{
+  "songs": [
+    {
+      "id": "song-mehdi-1",
+      "youtubeId": "P1p9Zq1-5uY",
+      "title": "Ranjish Hi Sahi",
+      "singerName": "Mehdi Hassan",
+      "urduSingerName": "مہدی حسن",
+      "filmName": "Mohabbat",
+      "decade": "1970s",
+      "genre": "Ghazal",
+      "thumbnailUrl": "https://img.youtube.com/vi/P1p9Zq1-5uY/0.jpg",
+      "playCount": 135,
+      "isFeatured": true
+    },
+    {
+      "id": "song-farida-1",
+      "youtubeId": "k4T0h96W2aU",
+      "title": "Aaj Jaane Ki Zid Na Karo",
+      "singerName": "Farida Khanum",
+      "urduSingerName": "فریدہ خانم",
+      "decade": "1970s",
+      "genre": "Ghazal",
+      "thumbnailUrl": "https://img.youtube.com/vi/k4T0h96W2aU/0.jpg",
+      "playCount": 247,
+      "isFeatured": true
+    },
+    {
+      "id": "song-mehdi-2",
+      "youtubeId": "PbUbU5RwlY8",
+      "title": "Zindagi Mein To Sabhi Pyar Kiya Karte Hain",
+      "singerName": "Mehdi Hassan",
+      "urduSingerName": "مہدی حسن",
+      "filmName": "Azmat",
+      "decade": "1970s",
+      "genre": "Ghazal",
+      "thumbnailUrl": "https://img.youtube.com/vi/PbUbU5RwlY8/0.jpg",
+      "playCount": 101,
+      "isFeatured": false
+    },
+    {
+      "id": "song-nusrat-1",
+      "youtubeId": "0KmnrocVkSU",
+      "title": "Ye Jo Halka Halka Suroor Hai",
+      "singerName": "Nusrat Fateh Ali Khan",
+      "urduSingerName": "نصرت فتح علی خان",
+      "decade": "1990s",
+      "genre": "Qawwali",
+      "thumbnailUrl": "https://img.youtube.com/vi/0KmnrocVkSU/0.jpg",
+      "playCount": 457,
+      "isFeatured": true
+    },
+    {
+      "id": "song-sabri-1",
+      "youtubeId": "5tJsTFe3t-c",
+      "title": "Tajdar-e-Haram",
+      "singerName": "Sabri Brothers",
+      "urduSingerName": "صابری برادران",
+      "decade": "1970s",
+      "genre": "Qawwali",
+      "thumbnailUrl": "https://img.youtube.com/vi/5tJsTFe3t-c/0.jpg",
+      "playCount": 319,
+      "isFeatured": true
+    },
+    {
+      "id": "song-noor-1",
+      "youtubeId": "7V1gZ2U5K7A",
+      "title": "Chandni Raaten",
+      "singerName": "Noor Jehan",
+      "urduSingerName": "نور جہاں",
+      "filmName": "Dopatta",
+      "decade": "1950s",
+      "genre": "Film Song",
+      "thumbnailUrl": "https://img.youtube.com/vi/7V1gZ2U5K7A/0.jpg",
+      "playCount": 192,
+      "isFeatured": true
+    },
+    {
+      "id": "song-iqbal-1",
+      "youtubeId": "p4vW7V-J5wY",
+      "title": "Hum Dekhenge",
+      "singerName": "Iqbal Bano",
+      "urduSingerName": "اقبال بانو",
+      "decade": "1980s",
+      "genre": "Ghazal",
+      "thumbnailUrl": "https://img.youtube.com/vi/p4vW7V-J5wY/0.jpg",
+      "playCount": 223,
+      "isFeatured": false
+    },
+    {
+      "id": "song-ghulam-1",
+      "youtubeId": "0k1L2g1rR3w",
+      "title": "Chupke Chupke Raat Din",
+      "singerName": "Ghulam Ali",
+      "urduSingerName": "غلام علی",
+      "decade": "1980s",
+      "genre": "Ghazal",
+      "thumbnailUrl": "https://img.youtube.com/vi/0k1L2g1rR3w/0.jpg",
+      "playCount": 177,
+      "isFeatured": false
+    },
+    {
+      "id": "song-alamgir-1",
+      "youtubeId": "kYJ5oV4a_oI",
+      "title": "Albela Rahi",
+      "singerName": "Alamgir",
+      "urduSingerName": "عالمگیر",
+      "decade": "1970s",
+      "genre": "Pop",
+      "thumbnailUrl": "https://img.youtube.com/vi/kYJ5oV4a_oI/0.jpg",
+      "playCount": 166,
+      "isFeatured": true
+    },
+    {
+      "id": "song-rushdi-1",
+      "youtubeId": "gT8Zt9yS_4U",
+      "title": "Ko Ko Korina",
+      "singerName": "Ahmed Rushdi",
+      "urduSingerName": "احمد رشدی",
+      "filmName": "Armaan",
+      "decade": "1960s",
+      "genre": "Film Song",
+      "thumbnailUrl": "https://img.youtube.com/vi/gT8Zt9yS_4U/0.jpg",
+      "playCount": 301,
+      "isFeatured": true
+    },
+    {
+      "id": "song-farida-2",
+      "youtubeId": "oU8r4W4aJ4Y",
+      "title": "Dil Jalane Ki Baat Karte Ho",
+      "singerName": "Farida Khanum",
+      "urduSingerName": "فریدہ خانم",
+      "decade": "1970s",
+      "genre": "Ghazal",
+      "thumbnailUrl": "https://img.youtube.com/vi/oU8r4W4aJ4Y/0.jpg",
+      "playCount": 87,
+      "isFeatured": false
+    },
+    {
+      "id": "song-runa-1",
+      "youtubeId": "F3v6b4j64-Q",
+      "title": "Dama Dam Mast Qalandar",
+      "singerName": "Runa Laila",
+      "urduSingerName": "رونا لیلیٰ",
+      "decade": "1970s",
+      "genre": "Folk",
+      "thumbnailUrl": "https://img.youtube.com/vi/F3v6b4j64-Q/0.jpg",
+      "playCount": 200,
+      "isFeatured": false
+    },
+    {
+      "id": "song-nayyara-1",
+      "youtubeId": "8O16XWd4Q5g",
+      "title": "Ae Jazba-e-Dil Gar Main Chahoon",
+      "singerName": "Nayyara Noor",
+      "urduSingerName": "نیرہ نور",
+      "decade": "1980s",
+      "genre": "Ghazal",
+      "thumbnailUrl": "https://img.youtube.com/vi/8O16XWd4Q5g/0.jpg",
+      "playCount": 144,
+      "isFeatured": false
+    },
+    {
+      "id": "song-nusrat-2",
+      "youtubeId": "Jm_t19Y-eGg",
+      "title": "Mere Rashke Qamar",
+      "singerName": "Nusrat Fateh Ali Khan",
+      "urduSingerName": "نصرت فتح علی خان",
+      "decade": "1980s",
+      "genre": "Qawwali",
+      "thumbnailUrl": "https://img.youtube.com/vi/Jm_t19Y-eGg/0.jpg",
+      "playCount": 391,
+      "isFeatured": false
+    },
+    {
+      "id": "song-nayyara-2",
+      "youtubeId": "SVbbP65IRb8",
+      "title": "Watan Ki Mitti Gawah Rehna",
+      "singerName": "Nayyara Noor",
+      "urduSingerName": "نیرہ نور",
+      "decade": "1980s",
+      "genre": "Folk",
+      "thumbnailUrl": "https://img.youtube.com/vi/SVbbP65IRb8/0.jpg",
+      "playCount": 123,
+      "isFeatured": false
+    },
+    {
+      "id": "song-runa-2",
+      "youtubeId": "0bpZAsCA5EU",
+      "title": "Mera Babu Chhail Chhabila",
+      "singerName": "Runa Laila",
+      "urduSingerName": "رونا لیلیٰ",
+      "decade": "1970s",
+      "genre": "Pop",
+      "thumbnailUrl": "https://img.youtube.com/vi/0bpZAsCA5EU/0.jpg",
+      "playCount": 158,
+      "isFeatured": false
+    },
+    {
+      "id": "song-mehdi-3",
+      "youtubeId": "YpB653Lq7S0",
+      "title": "Gulon Mein Rang Bhare",
+      "singerName": "Mehdi Hassan",
+      "urduSingerName": "مہدی حسن",
+      "filmName": "Farangi",
+      "decade": "1960s",
+      "genre": "Ghazal",
+      "thumbnailUrl": "https://img.youtube.com/vi/YpB653Lq7S0/0.jpg",
+      "playCount": 111,
+      "isFeatured": false
+    },
+    {
+      "id": "song-nusrat-3",
+      "youtubeId": "kYv9bM_082M",
+      "title": "Lal Meri Pat Rakhiyo",
+      "singerName": "Nusrat Fateh Ali Khan",
+      "urduSingerName": "نصرت فتح علی خان",
+      "decade": "1990s",
+      "genre": "Qawwali",
+      "thumbnailUrl": "https://img.youtube.com/vi/kYv9bM_082M/0.jpg",
+      "playCount": 282,
+      "isFeatured": false
+    },
+    {
+      "id": "song-nusrat-4",
+      "youtubeId": "IxUr9pHuE4g",
+      "title": "Tumhe Dillagi Bhool Jani Paregi",
+      "singerName": "Nusrat Fateh Ali Khan",
+      "urduSingerName": "نصرت فتح علی خان",
+      "decade": "1990s",
+      "genre": "Qawwali",
+      "thumbnailUrl": "https://img.youtube.com/vi/IxUr9pHuE4g/0.jpg",
+      "playCount": 424,
+      "isFeatured": true
+    },
+    {
+      "id": "song-iqbal-2",
+      "youtubeId": "C2M_L69_vU0",
+      "title": "Dasht-e-Tanhai Mein",
+      "singerName": "Iqbal Bano",
+      "urduSingerName": "اقبال بانو",
+      "decade": "1980s",
+      "genre": "Ghazal",
+      "thumbnailUrl": "https://img.youtube.com/vi/C2M_L69_vU0/0.jpg",
+      "playCount": 96,
+      "isFeatured": false
+    }
+  ],
+  "collections": [
+    {
+      "id": "col-mehdi",
+      "name": "Mehdi Hassan's Ghazal Gems",
+      "description": "The Shahenshah-e-Ghazal's timeless, majestic masterpieces of love, loss, and poetry.",
+      "coverImage": "https://images.unsplash.com/photo-1514525253161-7a46d19cd819?w=400&auto=format&fit=crop&q=60",
+      "songIds": [
+        "song-mehdi-1",
+        "song-mehdi-2",
+        "song-mehdi-3"
+      ]
+    },
+    {
+      "id": "col-noor",
+      "name": "Noor Jehan Film Classics",
+      "description": "Iconic cinematic melodies sung by Malika-e-Tarannum, Madam Noor Jehan.",
+      "coverImage": "https://images.unsplash.com/photo-1498038432885-c6f3f1b912ee?w=400&auto=format&fit=crop&q=60",
+      "songIds": [
+        "song-noor-1",
+        "song-rushdi-1"
+      ]
+    },
+    {
+      "id": "col-qawwali",
+      "name": "Golden Era Qawwali Classics",
+      "description": "Immersive Sufi ecstasy from legends Nusrat Fateh Ali Khan and the Sabri Brothers.",
+      "coverImage": "https://images.unsplash.com/photo-1465847899084-d164df4dedc6?w=400&auto=format&fit=crop&q=60",
+      "songIds": [
+        "song-nusrat-1",
+        "song-nusrat-2",
+        "song-nusrat-3",
+        "song-nusrat-4",
+        "song-sabri-1"
+      ]
+    },
+    {
+      "id": "col-folk",
+      "name": "Sufi & Folk Heritage",
+      "description": "Rich traditional folk, ghazals, and regional melodies that celebrate pure Pakistani soul.",
+      "coverImage": "https://images.unsplash.com/photo-1511671782779-c97d3d27a1d4?w=400&auto=format&fit=crop&q=60",
+      "songIds": [
+        "song-farida-1",
+        "song-farida-2",
+        "song-iqbal-1",
+        "song-iqbal-2",
+        "song-runa-1",
+        "song-nayyara-1",
+        "song-nayyara-2"
+      ]
+    },
+    {
+      "id": "col-pop",
+      "name": "PTV Nostalgia & Pop Legends",
+      "description": "Nostalgic 70s and 80s tunes that defined the golden age of television and pop music.",
+      "coverImage": "https://images.unsplash.com/photo-1511379938547-c1f69419868d?w=400&auto=format&fit=crop&q=60",
+      "songIds": [
+        "song-alamgir-1",
+        "song-runa-2"
+      ]
+    }
+  ],
+  "playlists": [
+    {
+      "id": "playlist-my-favs",
+      "name": "Mera Guldasta (My Favorites)",
+      "songIds": [
+        "song-mehdi-1",
+        "song-farida-1",
+        "song-nusrat-1"
+      ],
+      "createdAt": "2026-06-26T22:26:56.702Z"
+    }
+  ],
+  "favorites": [
+    "song-mehdi-1",
+    "song-farida-1",
+    "song-nusrat-1"
+  ],
+  "recentHistory": [
+    "song-sabri-1",
+    "song-nusrat-1",
+    "song-nayyara-2",
+    "song-nusrat-2",
+    "song-nusrat-4",
+    "song-nusrat-3",
+    "song-nayyara-1",
+    "song-runa-1",
+    "song-farida-2",
+    "song-rushdi-1",
+    "song-alamgir-1",
+    "song-ghulam-1",
+    "song-iqbal-1",
+    "song-noor-1",
+    "song-mehdi-2"
+  ]
+}

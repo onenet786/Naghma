@@ -88,8 +88,8 @@ export default function YTAudioPlayer({
       containerRef.current.appendChild(newEl);
     }
 
-    // Initialize YT Player
     playerRef.current = new (window as any).YT.Player(playerId, {
+      host: "https://www.youtube-nocookie.com",
       videoId: currentSong.youtubeId,
       playerVars: {
         autoplay: isPlaying ? 1 : 0,
