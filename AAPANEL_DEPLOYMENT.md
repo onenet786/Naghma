@@ -45,8 +45,7 @@ Local changes must be committed and pushed before `git pull` can retrieve them. 
 Verify the directory before installing anything:
 
 ```bash
-APP_DIR=/www/wwwroot/naghma.flaura.pk/Naghma
-cd "$APP_DIR"
+cd /www/wwwroot/naghma.flaura.pk/Naghma
 
 pwd
 test -f package.json
@@ -102,10 +101,15 @@ Run this entire block from aaPanel's terminal:
 ```bash
 set -e
 
-APP_DIR=/www/wwwroot/naghma.flaura.pk/Naghma
-cd "$APP_DIR"
+if [ "$(id -u)" -ne 0 ]; then
+  echo "Open aaPanel's root terminal (or run sudo -i) before continuing."
+  exit 1
+fi
+
+cd /www/wwwroot/naghma.flaura.pk/Naghma
 
 node -e "const p=require('./package.json'); for (const s of ['lint','build','start']) if (!p.scripts?.[s]) throw new Error('Missing npm script: '+s)"
+test -f package-lock.json
 
 npm ci
 npm run lint
@@ -116,9 +120,9 @@ test -f dist/server.cjs
 
 npm prune --omit=dev
 
-chown -R www:www "$APP_DIR"
-chmod 600 "$APP_DIR/.env"
-chmod 755 "$APP_DIR/data"
+chown -R www:www /www/wwwroot/naghma.flaura.pk/Naghma
+chmod 600 /www/wwwroot/naghma.flaura.pk/Naghma/.env
+chmod 755 /www/wwwroot/naghma.flaura.pk/Naghma/data
 ```
 
 `set -e` stops immediately if installation, linting, or building fails. Do not run `npm prune --omit=dev` separately after a failed build.
@@ -223,28 +227,68 @@ aaPanel documents domain Mapping as the reverse proxy from a bound domain to a N
 
 Do not delete `data/db.json`; it contains playlists, favorites, history, and dynamically discovered songs.
 
+### Update an uploaded project (use this on this server)
+
+The current server directory contains uploaded/modified files, so do not use `git pull`, `git restore`, or `git reset` there. Upload the new source files first, then open aaPanel's **root** terminal and copy this entire block. The first command is `set -e` (including the leading `s`).
+
 ```bash
 set -e
 
-APP_DIR=/www/wwwroot/naghma.flaura.pk/Naghma
-cd "$APP_DIR"
+if [ "$(id -u)" -ne 0 ]; then
+  echo "Open aaPanel's root terminal (or run sudo -i) before continuing."
+  exit 1
+fi
+
+cd /www/wwwroot/naghma.flaura.pk/Naghma
 
 test -f package.json
 test -f server.ts
 
 cp data/db.json "data/db.json.backup-$(date +%Y%m%d-%H%M%S)"
 
-# Use this only when the current changes were committed and pushed.
-git pull --ff-only
+if [ -f package-lock.json ]; then
+  npm ci
+else
+  npm install
+fi
 
-npm ci
 npm run lint
 npm run build
+test -f dist/index.html
 test -f dist/server.cjs
 npm prune --omit=dev
 
-chown -R www:www "$APP_DIR"
-chmod 600 "$APP_DIR/.env"
+chown -R www:www /www/wwwroot/naghma.flaura.pk/Naghma
+chmod 600 /www/wwwroot/naghma.flaura.pk/Naghma/.env
+```
+
+### Update a clean Git deployment
+
+Use Git updates only in a clean clone that is not overwritten through File Manager. Commit and push the new source first. If `git status --short` lists source files, stop and use the upload procedure above.
+
+```bash
+set -e
+
+if [ "$(id -u)" -ne 0 ]; then
+  echo "Open aaPanel's root terminal (or run sudo -i) before continuing."
+  exit 1
+fi
+
+cd /www/wwwroot/naghma.flaura.pk/Naghma
+git config --global --add safe.directory /www/wwwroot/naghma.flaura.pk/Naghma
+git status --short
+
+# Continue only when the checkout is clean except for known runtime data.
+git pull --ff-only
+npm ci
+npm run lint
+npm run build
+test -f dist/index.html
+test -f dist/server.cjs
+npm prune --omit=dev
+
+chown -R www:www /www/wwwroot/naghma.flaura.pk/Naghma
+chmod 600 /www/wwwroot/naghma.flaura.pk/Naghma/.env
 ```
 
 Restart Naghma from **Node.js Project > Service status**, then check:
@@ -254,6 +298,8 @@ curl --fail --silent --show-error http://127.0.0.1:3015/api/health
 curl --fail --silent --show-error https://naghma.flaura.pk/api/health
 echo
 ```
+
+If aaPanel's response headers show `x-cache: HIT`, open the domain Mapping/Reverse Proxy settings, disable proxy caching for this application (or clear its cache), then reload Nginx. `index.html` must not be cached; versioned files under `/assets/` are safe to cache.
 
 ## Troubleshooting
 
@@ -268,6 +314,17 @@ grep -n 'api/health' server.ts
 
 - No result: upload or pull the current source.
 - Route found: run `npm ci`, `npm run build`, `npm prune --omit=dev`, and restart the PM2 project.
+
+### Production shows an older UI after a successful build
+
+Compare the built and public JavaScript filenames:
+
+```bash
+grep -o 'index-[^"[:space:]]*\.js' /www/wwwroot/naghma.flaura.pk/Naghma/dist/index.html
+curl --silent https://naghma.flaura.pk/ | grep -o 'index-[^"[:space:]]*\.js'
+```
+
+They must match. If they differ, restart the correct PM2 project and clear/disable aaPanel reverse-proxy cache. A response header of `x-cache: HIT` confirms that the proxy returned a cached page.
 
 ### Vite permission errors under `/www/wwwroot/node_modules/.vite`
 
@@ -299,10 +356,9 @@ ss -ltnp | grep ':443' || true
 ### Permission denied for `data/db.json`
 
 ```bash
-APP_DIR=/www/wwwroot/naghma.flaura.pk/Naghma
-chown -R www:www "$APP_DIR/data"
-chmod 755 "$APP_DIR/data"
-chmod 664 "$APP_DIR/data/db.json"
+chown -R www:www /www/wwwroot/naghma.flaura.pk/Naghma/data
+chmod 755 /www/wwwroot/naghma.flaura.pk/Naghma/data
+chmod 664 /www/wwwroot/naghma.flaura.pk/Naghma/data/db.json
 ```
 
 ### Gemini features use fallback results
