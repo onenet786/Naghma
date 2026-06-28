@@ -1,16 +1,22 @@
 import express from "express";
 import path from "path";
 import fs from "fs";
-import { createServer as createViteServer } from "vite";
 import { GoogleGenAI, Type } from "@google/genai";
 import dotenv from "dotenv";
 
-dotenv.config();
+dotenv.config({ quiet: true });
 
 const app = express();
 const PORT = parseInt(process.env.PORT || "3015", 10);
 
-app.use(express.json());
+app.disable("x-powered-by");
+app.use(express.json({ limit: "16kb" }));
+
+app.use((_req, res, next) => {
+  res.setHeader("X-Content-Type-Options", "nosniff");
+  res.setHeader("Referrer-Policy", "strict-origin-when-cross-origin");
+  next();
+});
 
 // Lazy-initialized Gemini AI client
 let aiInstance: GoogleGenAI | null = null;
@@ -43,6 +49,15 @@ function getGeminiAI(): GoogleGenAI | null {
 // Search and suggestion caches to avoid redundant Gemini calls and prevent 429 quota errors
 const searchCache = new Map<string, any[]>();
 const suggestCache = new Map<string, any>();
+const MAX_CACHE_ENTRIES = 100;
+
+function setBoundedCache<K, V>(cache: Map<K, V>, key: K, value: V) {
+  if (!cache.has(key) && cache.size >= MAX_CACHE_ENTRIES) {
+    const oldestKey = cache.keys().next().value;
+    if (oldestKey !== undefined) cache.delete(oldestKey);
+  }
+  cache.set(key, value);
+}
 
 // Local File-based Database paths
 const DATA_DIR = path.join(process.cwd(), "data");
@@ -390,13 +405,21 @@ function saveDatabase(db: DbSchema) {
     if (!fs.existsSync(DATA_DIR)) {
       fs.mkdirSync(DATA_DIR, { recursive: true });
     }
-    fs.writeFileSync(DB_FILE, JSON.stringify(db, null, 2), "utf8");
+    const temporaryFile = `${DB_FILE}.${process.pid}.tmp`;
+    fs.writeFileSync(temporaryFile, JSON.stringify(db, null, 2), "utf8");
+    fs.renameSync(temporaryFile, DB_FILE);
+    return true;
   } catch (e) {
     console.error("Database saving failed:", e);
+    return false;
   }
 }
 
 // REST API Endpoints
+
+app.get("/api/health", (_req, res) => {
+  res.json({ status: "ok", uptimeSeconds: Math.floor(process.uptime()) });
+});
 
 // GET /api/songs - Gets all songs or filters them
 app.get("/api/songs", (req, res) => {
@@ -429,9 +452,13 @@ app.get("/api/songs", (req, res) => {
 // GET /api/search - Integrates Gemini-powered real-time discovery search with Google Search Grounding
 app.get("/api/search", async (req, res) => {
   const db = getDatabase();
-  const query = (req.query.q as string) || "";
+  const query = ((req.query.q as string) || "").trim();
   const filterDecade = req.query.decade as string;
   const filterGenre = req.query.genre as string;
+
+  if (query.length > 120) {
+    return res.status(400).json({ error: "Search query must be 120 characters or fewer" });
+  }
 
   console.log(`Search request received: q="${query}", decade="${filterDecade}", genre="${filterGenre}"`);
 
@@ -466,7 +493,7 @@ app.get("/api/search", async (req, res) => {
   if (!query || localResults.length >= 4 || !ai) {
     console.log(`Returning ${localResults.length} local search results.`);
     // Cache the local results too, so we don't recalculate
-    searchCache.set(cacheKey, localResults);
+    setBoundedCache(searchCache, cacheKey, localResults);
     return res.json(localResults);
   }
 
@@ -541,7 +568,14 @@ Your response MUST be a JSON array of objects conforming to the requested schema
     });
 
     if (updated) {
-      saveDatabase(db);
+      // Re-read after the AI request so intervening playlist/favorite writes are preserved.
+      const latestDb = getDatabase();
+      for (const song of formattedDynamicSongs) {
+        if (!latestDb.songs.some(existing => existing.youtubeId === song.youtubeId)) {
+          latestDb.songs.push(song);
+        }
+      }
+      saveDatabase(latestDb);
     }
 
     // Combine local results and dynamic results (deduplicating by youtubeId)
@@ -553,7 +587,7 @@ Your response MUST be a JSON array of objects conforming to the requested schema
     });
 
     // Save to memory cache to reduce quota usage and speed up UI response
-    searchCache.set(cacheKey, combined);
+    setBoundedCache(searchCache, cacheKey, combined);
     res.json(combined);
   } catch (error) {
     console.error("Gemini search failed, falling back strictly to local search:", error);
@@ -642,9 +676,12 @@ app.get("/api/playlists", (req, res) => {
 // POST /api/playlists - Create new playlist
 app.post("/api/playlists", (req, res) => {
   const db = getDatabase();
-  const { name } = req.body;
+  const name = typeof req.body?.name === "string" ? req.body.name.trim() : "";
   if (!name) {
     return res.status(400).json({ error: "Playlist name is required" });
+  }
+  if (name.length > 80) {
+    return res.status(400).json({ error: "Playlist name must be 80 characters or fewer" });
   }
 
   const newPlaylist = {
@@ -656,7 +693,7 @@ app.post("/api/playlists", (req, res) => {
 
   db.playlists.push(newPlaylist);
   saveDatabase(db);
-  res.status(210).json(newPlaylist);
+  res.status(201).json(newPlaylist);
 });
 
 // POST /api/playlists/:id/add - Add song to playlist
@@ -670,6 +707,9 @@ app.post("/api/playlists/:id/add", (req, res) => {
   }
   if (!songId) {
     return res.status(400).json({ error: "Song ID is required" });
+  }
+  if (!db.songs.some(song => song.id === songId)) {
+    return res.status(404).json({ error: "Song not found" });
   }
 
   if (!playlist.songIds.includes(songId)) {
@@ -713,6 +753,9 @@ app.post("/api/favorites/toggle", (req, res) => {
   if (!songId) {
     return res.status(400).json({ error: "Song ID is required" });
   }
+  if (!db.songs.some(song => song.id === songId)) {
+    return res.status(404).json({ error: "Song not found" });
+  }
 
   const isFav = db.favorites.includes(songId);
   if (isFav) {
@@ -736,7 +779,10 @@ app.get("/api/history", (req, res) => {
 
 // GET /api/gemini/suggest - Uses Gemini to suggest dynamic playlist/songs based on a theme or current mood
 app.get("/api/gemini/suggest", async (req, res) => {
-  const theme = (req.query.theme as string) || "romantic ghazal";
+  const theme = ((req.query.theme as string) || "romantic ghazal").trim();
+  if (theme.length > 200) {
+    return res.status(400).json({ error: "Theme must be 200 characters or fewer" });
+  }
   const cacheKey = theme.toLowerCase().trim();
 
   // Try to use cache first to conserve Gemini quota and avoid 429 errors
@@ -811,7 +857,7 @@ app.get("/api/gemini/suggest", async (req, res) => {
   if (!ai) {
     console.log("No Gemini API key available, using beautiful local fallback guldasta.");
     const fallback = getFallbackGuldasta();
-    suggestCache.set(cacheKey, fallback);
+    setBoundedCache(suggestCache, cacheKey, fallback);
     return res.json(fallback);
   }
 
@@ -849,7 +895,7 @@ Your response MUST be JSON format conforming to the requested schema. Ensure the
 
     const parsed = JSON.parse(response.text?.trim() || "{}");
     // Save to suggestCache
-    suggestCache.set(cacheKey, parsed);
+    setBoundedCache(suggestCache, cacheKey, parsed);
     res.json(parsed);
   } catch (error) {
     console.error("Gemini song suggestions failed, applying robust fallback:", error);
@@ -862,6 +908,7 @@ Your response MUST be JSON format conforming to the requested schema. Ensure the
 // Vite Middleware integration for assets
 async function startServer() {
   if (process.env.NODE_ENV !== "production") {
+    const { createServer: createViteServer } = await import("vite");
     const vite = await createViteServer({
       server: { middlewareMode: true },
       appType: "spa",
@@ -869,7 +916,15 @@ async function startServer() {
     app.use(vite.middlewares);
   } else {
     const distPath = path.join(process.cwd(), "dist");
-    app.use(express.static(distPath));
+    app.use(express.static(distPath, {
+      etag: true,
+      maxAge: "1h",
+      setHeaders: (res, filePath) => {
+        if (filePath.includes(`${path.sep}assets${path.sep}`)) {
+          res.setHeader("Cache-Control", "public, max-age=31536000, immutable");
+        }
+      }
+    }));
     app.get("*", (req, res) => {
       res.sendFile(path.join(distPath, "index.html"));
     });
@@ -880,4 +935,7 @@ async function startServer() {
   });
 }
 
-startServer();
+startServer().catch((error) => {
+  console.error("Failed to start Naghma server:", error);
+  process.exit(1);
+});

@@ -1,5 +1,5 @@
-import React, { useState, useEffect, useRef } from "react";
-import { Song, Collection, Playlist } from "./types";
+import React, { useState, useEffect } from "react";
+import { Song, Collection } from "./types";
 import YTAudioPlayer from "./components/YTAudioPlayer";
 import ExploreTab from "./components/ExploreTab";
 import SearchTab from "./components/SearchTab";
@@ -15,7 +15,7 @@ import { motion, AnimatePresence } from "motion/react";
 
 export default function App() {
   // Navigation / Tabs State
-  const [activeTab, setActiveTab] = useState<"explore" | "search" | "collections" | "playlists" | "guldasta">("explore");
+  const [activeTab, setActiveTab] = useState<"explore" | "search" | "collections" | "playlists" | "guldasta">("guldasta");
   
   // Custom states for filter sharing
   const [searchQuery, setSearchQuery] = useState("");
@@ -53,19 +53,22 @@ export default function App() {
   const fetchCatalog = async () => {
     try {
       setErrorMsg(null);
-      // Fetch songs list
-      const songsRes = await fetch("/api/songs");
-      const songsData = await songsRes.json();
+      const [songsRes, collectionsRes, favRes] = await Promise.all([
+        fetch("/api/songs"),
+        fetch("/api/collections"),
+        fetch("/api/favorites")
+      ]);
+      if (!songsRes.ok || !collectionsRes.ok || !favRes.ok) {
+        throw new Error("One or more catalog requests failed");
+      }
+
+      const [songsData, collectionsData, favData] = await Promise.all([
+        songsRes.json(),
+        collectionsRes.json(),
+        favRes.json()
+      ]);
       setAllSongs(songsData);
-
-      // Fetch collections
-      const collectionsRes = await fetch("/api/collections");
-      const collectionsData = await collectionsRes.json();
       setCollections(collectionsData);
-
-      // Fetch favorites
-      const favRes = await fetch("/api/favorites");
-      const favData = await favRes.json();
       setFavorites(favData.map((s: Song) => s.id));
     } catch (e) {
       console.error("Failed to connect to fullstack server:", e);
@@ -90,11 +93,12 @@ export default function App() {
 
     // Report play to server for statistics tracking
     try {
-      await fetch(`/api/songs/${song.id}/play`, { method: "POST" });
-      // Refresh local songs list to reflect increased play counts
-      const updatedRes = await fetch("/api/songs");
-      const updatedData = await updatedRes.json();
-      setAllSongs(updatedData);
+      const response = await fetch(`/api/songs/${song.id}/play`, { method: "POST" });
+      if (!response.ok) throw new Error("Play tracking request failed");
+      const { playCount } = await response.json();
+      setAllSongs(current => current.map(item =>
+        item.id === song.id ? { ...item, playCount } : item
+      ));
     } catch (e) {
       console.error("Failed to report play statistic:", e);
     }
@@ -141,13 +145,12 @@ export default function App() {
         headers: { "Content-Type": "application/json" },
         body: JSON.stringify({ songId })
       });
-      const data = await response.json();
-      
-      if (favorites.includes(songId)) {
-        setFavorites(favorites.filter(id => id !== songId));
-      } else {
-        setFavorites([...favorites, songId]);
-      }
+      if (!response.ok) throw new Error("Favorite update failed");
+      const { isFavorite } = await response.json();
+      setFavorites(current => isFavorite
+        ? (current.includes(songId) ? current : [...current, songId])
+        : current.filter(id => id !== songId)
+      );
     } catch (e) {
       console.error("Failed to toggle favorite:", e);
     }
